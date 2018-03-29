@@ -1,0 +1,70 @@
+<html>
+    <head>
+        <style>
+             p.inset {border-style: inset;}
+            body {
+                background-color: lightblue;
+            }
+
+            .card{
+                width: 300px;
+                padding:10px;
+                display: inline-block;
+                border-radius: 2px
+            }
+
+            h1 {
+                color:whitesmoke;
+                text-align: center;
+            }
+
+            p,a {
+                font-size: 20px;
+                font-family:"Verdana";
+                
+            }
+        </style>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+
+        <script type="text/template" id="tplate">
+            <div class="card">
+            <h4>{{leading_cause}}</h4>
+            <p>{{race_ethnicity}}</p>
+            <p>{{sex}}</p>
+            <p>{{deaths}}</p>
+            </div>
+        </script>
+
+        <script>
+            var data;
+            function search(){
+                $.getJSON("https://data.cityofnewyork.us/resource/uvxr-2jwn.json")
+            }
+
+            function displayDeaths(){
+                var build = "";
+                var output = document.getElementById("output");
+                var leadingCause = document.getElementById("leadingCause");
+                var tplate = document.getElementById("tplate").innerHTML;
+                var count = 0;
+                
+                for(var index; index < data.length; index++){
+                    if(data[index].leading_cause.toLowerCase().indexOf(leadingCause.value.toLowerCase())!=-1){
+                    build += Mustache.render(tplate,data[index]);
+                    count += 1;
+                    }
+                }
+                output.innerHTML = "<h3> Leading Cause: " + count + "</h3><br>" + build;
+            }
+
+        </script>
+    </head>
+    <body onload="search()">
+        <input type="text" id= "leadingCause" placeholder="Leading cause">
+        <button onclick="displayDeaths()"> Display </button>
+        <div id="output">
+        </div>
+    </body>
+</html>
